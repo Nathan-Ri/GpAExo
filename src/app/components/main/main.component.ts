@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
-import {Button} from 'primeng/button';
+import {Component} from '@angular/core';
+import {CalendarComponent} from '../calendar/calendar.component';
 
 @Component({
   selector: 'app-main',
-  imports: [],
+  imports: [
+    CalendarComponent,
+  ],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })
 export class MainComponent {
+
 
 }
