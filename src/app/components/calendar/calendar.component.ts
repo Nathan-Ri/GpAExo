@@ -166,9 +166,14 @@ export class CalendarComponent implements OnInit {
   }
 
   convertToISOString(dateStr: string): string {
-    if (this.isISOString(dateStr)) return dateStr;
+    // une fois convertie en isostring, le type de dateStr est object.
+    // Donc pas String, mais typescript laisse le parametre string car object est casté en string.
+    // Cela permet l'update en gardant les données des inputs.
+    // C'est un peu étrange mais ça permet d'avoir la date en lecture française et pas américaine.
+    if (typeof dateStr !== "string") return dateStr;
     const [day, month, year] = dateStr.split('/').map(Number);
     const date = new Date(year, month - 1, day);
+    console.log('aze')
     return date.toISOString();
   }
 
