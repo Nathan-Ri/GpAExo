@@ -7,8 +7,9 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {providePrimeNG} from 'primeng/config';
 import Aura from '@primeng/themes/aura';
-import {provideStore, StoreModule} from '@ngrx/store';
+import {provideStore} from '@ngrx/store';
 import {CalendarFeature} from './components/calendar/reducer';
+import {ReactiveFormsModule} from '@angular/forms';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -18,7 +19,9 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom([
         BrowserModule,
         BrowserAnimationsModule,
+      ReactiveFormsModule
     ]),
+
     providePrimeNG({
         theme: {
             preset: Aura

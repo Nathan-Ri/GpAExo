@@ -6,7 +6,12 @@ import * as CalendarActions from './actions';
 interface State {
   dialogVisible: boolean,
   calendarVisible: boolean,
-  events: EventInput[]
+  events: CustomEventInput[]
+}
+
+interface CustomEventInput extends EventInput {
+  agent?: string;
+  project?: string;
 }
 
 const initialState: State = {
@@ -20,21 +25,8 @@ export const CalendarFeature = createFeature({
   reducer: createReducer(
     initialState,
     on(CalendarActions.toggleCalendar, state => ({ ...state, calendarVisible: !state.calendarVisible })),
-    on(CalendarActions.dateClick, state => ({ ...state, dialog: !state.dialogVisible })),
     on(CalendarActions.createEvent, (state, { event }) => ({ ...state, events: [...state.events, event] })),
     on(CalendarActions.deleteEvent, (state, { id }) => ({ ...state, events: state.events.filter(e => e.id !== id) }))
   )
 });
 
-export const {
-  name,
-  reducer,
-  selectCalendarState,
-  selectCalendarVisible,
-  selectEvents
-} = CalendarFeature;
-
-export const selectEventsCount = createSelector(
-  CalendarFeature.selectEvents,
-  events => events.length
-);
