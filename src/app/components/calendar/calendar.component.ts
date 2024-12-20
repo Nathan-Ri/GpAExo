@@ -15,6 +15,7 @@ import {Observable} from 'rxjs';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {DatePicker} from 'primeng/datepicker';
 import {Select} from 'primeng/select';
+import {Tooltip} from 'primeng/tooltip';
 
 @Component({
   selector: 'app-calendar',
@@ -26,12 +27,14 @@ import {Select} from 'primeng/select';
     FormsModule,
     ReactiveFormsModule,
     DatePicker,
-    Select
+    Select,
+    Tooltip
   ],
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css'
 })
 export class CalendarComponent implements OnInit {
+  @ViewChild('calendar') calendarComponent?: FullCalendarComponent;
   formGroup: FormGroup;
   events$: Observable<any>; // flux d'évènement du calendrier récupérer via NgRx
   dialogVisible: boolean = false;
@@ -47,6 +50,7 @@ export class CalendarComponent implements OnInit {
     ],
     selectable: true,
     firstDay: 1,
+    timeZone: 'local',
     multiMonthMinWidth: 100,
     multiMonthMaxColumns: 1,
     select: this.handleDateSelect.bind(this), // selection des dates (click direct sur calendrier)
@@ -60,15 +64,15 @@ export class CalendarComponent implements OnInit {
       id: new FormControl<number | null>(null),
       selectedAgent: new FormControl<String | null>(null, [Validators.required]),
       selectedProject: new FormControl<String | null>(null, [Validators.required]),
-      dateStart: new FormControl<Date | null>(null, [Validators.required]),
-      dateEnd: new FormControl<Date | null>(null, [Validators.required]),
+      dateStart: new FormControl<String | null>(null, [Validators.required]),
+      dateEnd: new FormControl<String | null>(null, [Validators.required]),
     });
     this.formGroup.setValue({
       id: null,
       selectedAgent: null,
       selectedProject: null,
-      dateStart: new Date(),
-      dateEnd: new Date()
+      dateStart: '',
+      dateEnd: ''
     })
   }
 
@@ -141,6 +145,7 @@ export class CalendarComponent implements OnInit {
       };
       // Dispatch de l'action pour sauvegarder ou modifier l'événement.
       this.store.dispatch(CalendarActions.createEvent({event}));
+      this.renderIncludedEnd()
       this.dialogVisible = false
     }
   }
@@ -174,4 +179,9 @@ export class CalendarComponent implements OnInit {
     return date.toISOString();
   }
 
+  private renderIncludedEnd() {
+    if(!this.calendarComponent) return
+    const events = this.calendarComponent.events
+
+  }
 }

@@ -55,6 +55,7 @@
       <label for="dateEnd" class="font-semibold w-24"> date end</label>
       <p-date-picker
         id="dateEnd"
+        pTooltip="This date is excluded, it finishes the day before at 23h59min59s"
         formControlName="dateEnd"
         appendTo="body"
         [dateFormat]="'dd/mm/yy'"
