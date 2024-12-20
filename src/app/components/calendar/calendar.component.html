@@ -23,7 +23,7 @@
       <label for="projects" class="font-semibold w-24">Agent</label>
       <p-select
         id="agent"
-        [options]="agents"
+        [options]="agents$ | async"
         formControlName="selectedAgent"
         placeholder="Select an agent"
         class="w-full md:w-56"
@@ -34,7 +34,7 @@
       <label for="projects" class="font-semibold w-24">Projet</label>
       <p-select
         id="projects"
-        [options]="projects"
+        [options]="projects$ | async"
         formControlName="selectedProject"
         placeholder="Select a Project"
         class="w-full md:w-56"

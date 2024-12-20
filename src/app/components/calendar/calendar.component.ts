@@ -16,6 +16,8 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 import {DatePicker} from 'primeng/datepicker';
 import {Select} from 'primeng/select';
 import {Tooltip} from 'primeng/tooltip';
+import {AgentFeature} from '../../stores/agents/agent.reducer';
+import {ProjectFeature} from '../../stores/projects/project.reducer';
 
 @Component({
   selector: 'app-calendar',
@@ -33,13 +35,13 @@ import {Tooltip} from 'primeng/tooltip';
   templateUrl: './calendar.component.html',
   styleUrl: './calendar.component.css'
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent {
   @ViewChild('calendar') calendarComponent?: FullCalendarComponent;
   formGroup: FormGroup;
   events$: Observable<any>; // flux d'évènement du calendrier récupérer via NgRx
+  agents$: Observable<any>;
+  projects$: Observable<any>;
   dialogVisible: boolean = false;
-  projects: string[] | undefined;
-  agents: string[] | undefined;
 
   calendarOptions: CalendarOptions = {
     initialView: 'multiMonthYear',
@@ -59,7 +61,9 @@ export class CalendarComponent implements OnInit {
 
 
   constructor(private readonly store: Store) {
-    this.events$ = this.store.select(CalendarFeature.selectEvents) // bind du flux sur le store fullCalendar
+    this.events$ = store.select(CalendarFeature.selectEvents) // bind du flux sur le store fullCalendar
+    this.agents$ = store.select(AgentFeature.selectAgents) // bind du flux sur le store fullCalendar
+    this.projects$ = store.select(ProjectFeature.selectProjects) // bind du flux sur le store fullCalendar
     this.formGroup = new FormGroup({
       id: new FormControl<number | null>(null),
       selectedAgent: new FormControl<String | null>(null, [Validators.required]),
@@ -76,21 +80,6 @@ export class CalendarComponent implements OnInit {
     })
   }
 
-  ngOnInit() {
-    //mise en dur des projets et agents, j'ai simplifier l'exo pour utiliser moins de models
-    this.projects = [
-      'Super Secret Project1',
-      'Super Secret Project2',
-      'Super Secret Project3',
-      'vacances',
-    ]
-    this.agents = [
-      'Super Secret Agent 1',
-      'Super Secret Agent 2',
-      'Super Secret Agent 3',
-    ]
-  }
-
   handleEventClick(selectInfo: EventClickArg) {
     this.dialogVisible = true
     this.formGroup.setValue({
@@ -104,7 +93,6 @@ export class CalendarComponent implements OnInit {
 
   handleDateSelect(selectInfo: DateSelectArg) {
     const calendarApi = selectInfo.view.calendar;
-    console.log('api', calendarApi, selectInfo)
     this.dialogVisible = true
     calendarApi.unselect(); // clear date selection
     //formate les dates de la bibliothèque de composant pour correspondre à la lisibilité française

@@ -10,6 +10,8 @@ import Aura from '@primeng/themes/aura';
 import {provideStore} from '@ngrx/store';
 import {CalendarFeature} from './components/calendar/reducer';
 import {ReactiveFormsModule} from '@angular/forms';
+import {AgentFeature} from './stores/agents/agent.reducer';
+import {ProjectFeature} from './stores/projects/project.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,6 +30,10 @@ export const appConfig: ApplicationConfig = {
         },
 
     }),
-    provideStore({calendar: CalendarFeature.reducer}),
+    provideStore({
+      calendar: CalendarFeature.reducer,
+      agent: AgentFeature.reducer,
+      project: ProjectFeature.reducer,
+    }),
 ]
 };
