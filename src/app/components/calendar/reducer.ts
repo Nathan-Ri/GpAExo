@@ -1,6 +1,5 @@
 import { EventInput } from '@fullcalendar/core';
 import { createFeature, createReducer, on } from '@ngrx/store';
-import { INITIAL_EVENTS } from './event-utils';
 import * as CalendarActions from './actions';
 
 interface State {
@@ -13,7 +12,7 @@ interface CustomEventInput extends EventInput {
 }
 
 const initialState: State = {
-  events: INITIAL_EVENTS
+  events: []
 }
 
 export const CalendarFeature = createFeature({

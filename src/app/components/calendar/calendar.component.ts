@@ -8,7 +8,6 @@ import {Button} from 'primeng/button';
 import {Dialog} from 'primeng/dialog';
 import {AsyncPipe} from '@angular/common';
 import {Store} from '@ngrx/store';
-import {createEventId} from './event-utils';
 import {CalendarFeature} from './reducer';
 import * as CalendarActions from './actions';
 import {Observable} from 'rxjs';
@@ -18,6 +17,7 @@ import {Select} from 'primeng/select';
 import {Tooltip} from 'primeng/tooltip';
 import {AgentFeature} from '../../stores/agents/agent.reducer';
 import {ProjectFeature} from '../../stores/projects/project.reducer';
+import {createEventId} from './event-utils';
 
 @Component({
   selector: 'app-calendar',
@@ -75,8 +75,8 @@ export class CalendarComponent {
       id: null,
       selectedAgent: null,
       selectedProject: null,
-      dateStart: '',
-      dateEnd: ''
+      dateStart: null,
+      dateEnd: null
     })
   }
 
@@ -86,8 +86,8 @@ export class CalendarComponent {
       id: selectInfo.event.id,
       selectedAgent: selectInfo.event.extendedProps['agent'],
       selectedProject: selectInfo.event.extendedProps['project'],
-      dateStart: selectInfo.event.start,
-      dateEnd: selectInfo.event.end
+      dateStart: this.formatDateIntl(selectInfo.event.startStr),
+      dateEnd: this.formatDateIntl(selectInfo.event.endStr)
     })
   }
 
@@ -126,6 +126,8 @@ export class CalendarComponent {
         title: formatedData.selectedAgent,
         start: this.convertToISOString(formatedData.dateStart),
         end: this.convertToISOString(formatedData.dateEnd),
+        // start: formatedData.dateStart,
+        // end: formatedData.dateEnd,
         allDay: true,
         backgroundColor: this.getColor(formatedData.selectedProject),
         agent: formatedData.selectedAgent,
@@ -133,7 +135,6 @@ export class CalendarComponent {
       };
       // Dispatch de l'action pour sauvegarder ou modifier l'événement.
       this.store.dispatch(CalendarActions.createEvent({event}));
-      this.renderIncludedEnd()
       this.dialogVisible = false
     }
   }
@@ -156,20 +157,15 @@ export class CalendarComponent {
 
   // Convertit une date au format français (dd/mm/yyyy) en ISOString.
   convertToISOString(dateStr: string): string {
-    // une fois convertie en isostring, le type de dateStr est object.
-    // Donc pas String, mais typescript laisse le parametre string car object est casté en string.
-    // Cela permet l'update en gardant les données des inputs.
-    // C'est un peu étrange mais ça permet d'avoir la date en lecture française et pas américaine.
-    if (typeof dateStr !== "string") return dateStr;
     const [day, month, year] = dateStr.split('/').map(Number);
-    // const date = new Date(year, month - 1, day);
     let date = new Date(Date.UTC(year, month - 1, day)); // Crée une date en UTC
     return date.toISOString();
   }
 
-  private renderIncludedEnd() {
-    if(!this.calendarComponent) return
-    const events = this.calendarComponent.events
 
-  }
+  formatDateIntl(dateString: string): string {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('fr-FR').format(date);
+  };
+
 }

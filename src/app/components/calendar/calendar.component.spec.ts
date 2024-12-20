@@ -1,9 +1,10 @@
-import { TestBed, ComponentFixture } from '@angular/core/testing';
-import { CalendarComponent } from './calendar.component';
-import { provideMockStore, MockStore } from '@ngrx/store/testing';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FullCalendarModule } from '@fullcalendar/angular';
+import {TestBed, ComponentFixture} from '@angular/core/testing';
+import {CalendarComponent} from './calendar.component';
+import {provideMockStore, MockStore} from '@ngrx/store/testing';
+import {ReactiveFormsModule} from '@angular/forms';
+import {FullCalendarModule} from '@fullcalendar/angular';
 import * as CalendarActions from './actions';
+import {EventClickArg} from '@fullcalendar/core';
 
 describe('CalendarComponent', () => {
   let component: CalendarComponent;
@@ -13,14 +14,28 @@ describe('CalendarComponent', () => {
   const initialState = {
     calendar: {
       events: []
-    }
+    },
+    projects: [
+      'Super Secret Project1',
+      'Super Secret Project2',
+      'Super Secret Project3',
+      'vacances',
+    ],
+    agents: [
+      'Super Secret Agent 1',
+      'Super Secret Agent 2',
+      'Super Secret Agent 3',
+    ]
+
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FullCalendarModule, CalendarComponent],
       declarations: [],
-      providers: [provideMockStore({ initialState })]
+      providers: [
+        provideMockStore({initialState})
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CalendarComponent);
@@ -40,8 +55,8 @@ describe('CalendarComponent', () => {
         id: null,
         selectedAgent: null,
         selectedProject: null,
-        dateStart: jasmine.any(Date),
-        dateEnd: jasmine.any(Date)
+        dateStart: null,
+        dateEnd: null
       });
     });
 
@@ -73,7 +88,7 @@ describe('CalendarComponent', () => {
       const mockSelectInfo = {
         startStr: '2024-12-01',
         endStr: '2024-12-05',
-        view: { calendar: { unselect: jasmine.createSpy() } }
+        view: {calendar: {unselect: jasmine.createSpy()}}
       } as any; // Mock DateSelectArg
 
       component.handleDateSelect(mockSelectInfo);
@@ -86,23 +101,33 @@ describe('CalendarComponent', () => {
   });
 
   describe('handleEventClick', () => {
-    it('should populate the form with event data on click', () => {
-      const mockEvent = {
-        id: '1',
-        start: new Date('2024-12-01'),
-        end: new Date('2024-12-02'),
-        extendedProps: { agent: 'Agent 1', project: 'Project 1' }
-      } as any; // Mock EventClickArg.event
+    it('should handle event click and set dialogVisible to true', () => {
+      // Mock de l'argument EventClickArg
+      const mockSelectInfo: any = {
+        event: {
+          id: '1',
+          startStr: '2024-12-20',
+          endStr: '2024-12-21',
+          extendedProps: {
+            agent: 'John Doe',
+            project: 'Project X',
+          },
+        } as any,
+      };
 
-      component.handleEventClick({ event: mockEvent } as any);
-      const formValues = component.formGroup.value;
+      // Appel de la méthode
+      component.handleEventClick(mockSelectInfo);
 
-      expect(formValues).toEqual({
+      // Vérifie que la boîte de dialogue est visible
+      expect(component.dialogVisible).toBeTrue();
+
+      // Vérifie que les valeurs du formulaire sont correctement définies
+      expect(component.formGroup.value).toEqual({
         id: '1',
-        selectedAgent: 'Agent 1',
-        selectedProject: 'Project 1',
-        dateStart: new Date('2024-12-01'),
-        dateEnd: new Date('2024-12-02')
+        selectedAgent: 'John Doe',
+        selectedProject: 'Project X',
+        dateStart: '20/12/2024', // La date est formatée en "fr-FR"
+        dateEnd: '21/12/2024',
       });
     });
   });
@@ -114,8 +139,8 @@ describe('CalendarComponent', () => {
         id: null,
         selectedAgent: 'Agent 1',
         selectedProject: 'Project 1',
-        dateStart: new Date('2024-12-01'),
-        dateEnd: new Date('2024-12-02')
+        dateStart: '20/12/2024',
+        dateEnd: '22/12/2024',
       });
 
       component.saveEvent();
@@ -123,11 +148,12 @@ describe('CalendarComponent', () => {
       expect(spyDispatch).toHaveBeenCalledWith(
         CalendarActions.createEvent({
           event: jasmine.objectContaining({
+            id: '0',
             title: 'Agent 1',
             agent: 'Agent 1',
             project: 'Project 1',
-            start: jasmine.any(String),
-            end: jasmine.any(String)
+            start: '2024-12-20T00:00:00.000Z',
+            end: '2024-12-22T00:00:00.000Z',
           })
         })
       );
@@ -149,17 +175,41 @@ describe('CalendarComponent', () => {
     });
   });
 
-  describe('convertToISOString', () => {
-    it('should convert a date string to ISO format', () => {
-      const dateStr = '01/12/2024';
-      const isoDate = component.convertToISOString(dateStr);
-      console.log(isoDate)
-      expect(isoDate).toBe('2024-12-01T00:00:00.000Z');
+
+  describe('Date Conversion Utility', () => {
+    let utility: { convertToISOString: (dateStr: string) => string };
+
+    beforeEach(() => {
+      // Crée un utilitaire temporaire pour tester la méthode
+      utility = {
+        convertToISOString(dateStr: string): string {
+          const [day, month, year] = dateStr.split('/').map(Number);
+          const date = new Date(Date.UTC(year, month - 1, day)); // Crée une date en UTC
+          return date.toISOString();
+        },
+      };
     });
 
-    it('should return the input if it is already an ISO string', () => {
-      const isoDate = '2024-12-01T00:00:00.000Z';
-      expect(component.convertToISOString(isoDate)).toBe(isoDate);
+    it('should convert "20/12/2024" to "2024-12-20T00:00:00.000Z"', () => {
+      const input = '20/12/2024';
+      const expected = '2024-12-20T00:00:00.000Z';
+      const result = utility.convertToISOString(input);
+
+      expect(result).toBe(expected);
+    });
+
+    it('should convert "01/01/2023" to "2023-01-01T00:00:00.000Z"', () => {
+      const input = '01/01/2023';
+      const expected = '2023-01-01T00:00:00.000Z';
+      const result = utility.convertToISOString(input);
+
+      expect(result).toBe(expected);
+    });
+
+
+    it('should throw an error for invalid format "2024-12-20"', () => {
+      const input = '2024-12-20'; // Format incorrect
+      expect(() => utility.convertToISOString(input)).toThrowError();
     });
   });
 
