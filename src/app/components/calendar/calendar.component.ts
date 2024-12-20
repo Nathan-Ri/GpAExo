@@ -33,7 +33,6 @@ import {createEventId} from './event-utils';
     Tooltip
   ],
   templateUrl: './calendar.component.html',
-  styleUrl: './calendar.component.css'
 })
 export class CalendarComponent {
   @ViewChild('calendar') calendarComponent?: FullCalendarComponent;
@@ -80,7 +79,7 @@ export class CalendarComponent {
     })
   }
 
-  handleEventClick(selectInfo: EventClickArg) {
+  handleEventClick(selectInfo: EventClickArg): void {
     this.dialogVisible = true
     this.formGroup.setValue({
       id: selectInfo.event.id,
@@ -91,7 +90,7 @@ export class CalendarComponent {
     })
   }
 
-  handleDateSelect(selectInfo: DateSelectArg) {
+  handleDateSelect(selectInfo: DateSelectArg): void {
     const calendarApi = selectInfo.view.calendar;
     this.dialogVisible = true
     calendarApi.unselect(); // clear date selection
@@ -118,7 +117,7 @@ export class CalendarComponent {
   }
 
   // Sauvegarde un événement en utilisant les valeurs du formulaire.
-  saveEvent() {
+  saveEvent(): void {
     if (this.formGroup.valid) {
       let formatedData = this.formGroup.value
       const event: EventInput = {
@@ -126,8 +125,6 @@ export class CalendarComponent {
         title: formatedData.selectedAgent,
         start: this.convertToISOString(formatedData.dateStart),
         end: this.convertToISOString(formatedData.dateEnd),
-        // start: formatedData.dateStart,
-        // end: formatedData.dateEnd,
         allDay: true,
         backgroundColor: this.getColor(formatedData.selectedProject),
         agent: formatedData.selectedAgent,
