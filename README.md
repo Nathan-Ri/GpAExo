@@ -1,59 +1,39 @@
 # Groupama
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.5.
+Il répond à un exercice envoyé par Groupama
 
-## Development server
+Il contient des dépences pour afficher un calendrier, un utilitaire front de composant, et NgRx pour le traitement des évènements du calendrier
 
-To start a local development server, run:
+## Tester le code
 
+Après avoir cloné le projet :
 ```bash
-ng serve
+npm install  # pour lancer l'installation des dépendences
+ng serve # lancer l'application en local
+ng test # lancer les tests unitaires
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Utilisation de l'application
 
-## Code scaffolding
+### Création d'un évènement
+Un calendrier s'affiche sur la page d'accueil, il représente l'année en cours, on peut parcourir les mois avec la barre de scrolling.
+#
+#### Pour ajouter un évènement : 
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+On peut cliquer gauche et glisser la souris pour selectionner une plage de jours sur laquelle rajouter un event.
 
-```bash
-ng generate component component-name
-```
+On peut cliquer sur un jour pour un seul jour.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Une fenetre s'ouvre pour selectionner le projet (3 projets + vacances) et l'agent à affecter au projet.
 
-```bash
-ng generate --help
-```
+En cliquant sur le bouton sauvgarder un évènement est créé.
 
-## Building
+#
+#### Pour modifier un évènement : 
 
-To build the project run:
+On peut cliquer sur un évènement pour modifier celui-ci, la fenetre s'ouvre pré-remplie avec les informations de l'évènement.
 
-```bash
-ng build
-```
+Il faut les modifier et sauvegarder pour mettre à jour l'évènement sur lequel on a cliqué.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
