@@ -1,7 +1,7 @@
-# Groupama
+# G
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.5.
-Il répond à un exercice envoyé par Groupama
+Il répond à un exercice envoyé par G
 
 Il contient des dépendances pour afficher un calendrier, un utilitaire front de composants, et NgRx pour le traitement des évènements du calendrier
 
