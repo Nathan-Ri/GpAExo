@@ -1,12 +1,12 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {FullCalendarComponent, FullCalendarModule} from '@fullcalendar/angular';
-import {CalendarOptions, DateInput, DateSelectArg, EventClickArg, EventInput} from '@fullcalendar/core';
+import {CalendarOptions, DateSelectArg, EventClickArg, EventInput} from '@fullcalendar/core';
 import multiMonthPlugin from '@fullcalendar/multimonth';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import {Button} from 'primeng/button';
 import {Dialog} from 'primeng/dialog';
-import {AsyncPipe, DatePipe} from '@angular/common';
+import {AsyncPipe} from '@angular/common';
 import {Store} from '@ngrx/store';
 import {createEventId} from './event-utils';
 import {CalendarFeature} from './reducer';
@@ -19,7 +19,7 @@ import {Select} from 'primeng/select';
 @Component({
   selector: 'app-calendar',
   imports: [
-    FullCalendarModule,
+    FullCalendarModule, // module full calendar (librairie utilisée pour le calendrier)
     Button,
     Dialog,
     AsyncPipe,
@@ -32,10 +32,9 @@ import {Select} from 'primeng/select';
   styleUrl: './calendar.component.css'
 })
 export class CalendarComponent implements OnInit {
-  protected formGroup: FormGroup;
-  protected events$: Observable<any>;
+  formGroup: FormGroup;
+  events$: Observable<any>; // flux d'évènement du calendrier récupérer via NgRx
   dialogVisible: boolean = false;
-  @ViewChild('calendar') calendarComponent?: FullCalendarComponent;
   projects: string[] | undefined;
   agents: string[] | undefined;
 
@@ -47,15 +46,16 @@ export class CalendarComponent implements OnInit {
       listPlugin,
     ],
     selectable: true,
+    firstDay: 1,
     multiMonthMinWidth: 100,
     multiMonthMaxColumns: 1,
-    select: this.handleDateSelect.bind(this),
-    eventClick: this.handleEventClick.bind(this),
+    select: this.handleDateSelect.bind(this), // selection des dates (click direct sur calendrier)
+    eventClick: this.handleEventClick.bind(this), // click sur un event pour modification
   };
 
 
   constructor(private readonly store: Store) {
-    this.events$ = this.store.select(CalendarFeature.selectEvents)
+    this.events$ = this.store.select(CalendarFeature.selectEvents) // bind du flux sur le store fullCalendar
     this.formGroup = new FormGroup({
       id: new FormControl<number | null>(null),
       selectedAgent: new FormControl<String | null>(null, [Validators.required]),
@@ -73,6 +73,7 @@ export class CalendarComponent implements OnInit {
   }
 
   ngOnInit() {
+    //mise en dur des projets et agents, j'ai simplifier l'exo pour utiliser moins de models
     this.projects = [
       'Super Secret Project1',
       'Super Secret Project2',
@@ -99,8 +100,10 @@ export class CalendarComponent implements OnInit {
 
   handleDateSelect(selectInfo: DateSelectArg) {
     const calendarApi = selectInfo.view.calendar;
+    console.log('api', calendarApi, selectInfo)
     this.dialogVisible = true
     calendarApi.unselect(); // clear date selection
+    //formate les dates de la bibliothèque de composant pour correspondre à la lisibilité française
     const dateStart = new Date(selectInfo.startStr)
     const formattedStart = dateStart.toLocaleDateString('fr-FR', {
       day: '2-digit',
@@ -122,11 +125,12 @@ export class CalendarComponent implements OnInit {
     })
   }
 
+  // Sauvegarde un événement en utilisant les valeurs du formulaire.
   saveEvent() {
     if (this.formGroup.valid) {
       let formatedData = this.formGroup.value
       const event: EventInput = {
-        id: this.formGroup.get('id')?.value ?? createEventId(),
+        id: this.formGroup.get('id')?.value ?? createEventId(), // crée un id ou en utilise un présent
         title: formatedData.selectedAgent,
         start: this.convertToISOString(formatedData.dateStart),
         end: this.convertToISOString(formatedData.dateEnd),
@@ -135,22 +139,14 @@ export class CalendarComponent implements OnInit {
         agent: formatedData.selectedAgent,
         project: formatedData.selectedProject
       };
-      this.store.dispatch(CalendarActions.createEvent({event})); // create event modify the id of the event thus updating it, if it already exists
+      // Dispatch de l'action pour sauvegarder ou modifier l'événement.
+      this.store.dispatch(CalendarActions.createEvent({event}));
       this.dialogVisible = false
     }
   }
 
-  private eventInit(): EventInput {
-    return {
-      id: createEventId(),
-      title: '',
-      start: 'selectInfo.startStr',
-      end: 'selectInfo.endStr',
-      allDay: true
-    };
-  }
-
-  private getColor(selectedProject: string): string {
+  // Détermine la couleur de l'événement en fonction du projet sélectionné.
+  getColor(selectedProject: string): string {
     switch (selectedProject) {
       case 'Super Secret Project1':
         return '#f00000'
@@ -165,6 +161,7 @@ export class CalendarComponent implements OnInit {
     }
   }
 
+  // Convertit une date au format français (dd/mm/yyyy) en ISOString.
   convertToISOString(dateStr: string): string {
     // une fois convertie en isostring, le type de dateStr est object.
     // Donc pas String, mais typescript laisse le parametre string car object est casté en string.
@@ -172,13 +169,9 @@ export class CalendarComponent implements OnInit {
     // C'est un peu étrange mais ça permet d'avoir la date en lecture française et pas américaine.
     if (typeof dateStr !== "string") return dateStr;
     const [day, month, year] = dateStr.split('/').map(Number);
-    const date = new Date(year, month - 1, day);
-    console.log('aze')
+    // const date = new Date(year, month - 1, day);
+    let date = new Date(Date.UTC(year, month - 1, day)); // Crée une date en UTC
     return date.toISOString();
   }
 
-  isISOString(dateStr: string): boolean {
-    const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z?$/;
-    return isoRegex.test(dateStr) && !isNaN(Date.parse(dateStr));
-  }
 }

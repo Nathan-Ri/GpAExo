@@ -18,7 +18,7 @@
   <ng-template #header>
   </ng-template>
   <form [formGroup]="formGroup">
-     <input type="hidden" formControlName="id" />
+    <input type="hidden" formControlName="id"/>
     <div class="flex items-center gap-4 mb-4">
       <label for="projects" class="font-semibold w-24">Agent</label>
       <p-select
@@ -48,9 +48,8 @@
         formControlName="dateStart"
         appendTo="body"
         [dateFormat]="'dd/mm/yy'"
-        [dataType]="'string'">
-        [keepInvalid]="true"
-        >
+        [dataType]="'string'"
+        [keepInvalid]="true">
 
       </p-date-picker>
       <label for="dateEnd" class="font-semibold w-24"> date end</label>
@@ -59,9 +58,9 @@
         formControlName="dateEnd"
         appendTo="body"
         [dateFormat]="'dd/mm/yy'"
-        [dataType]="'string'">
+        [dataType]="'string'"
         [keepInvalid]="true"
-        >
+      >
       </p-date-picker>
     </div>
   </form>

@@ -25,7 +25,8 @@ export const appConfig: ApplicationConfig = {
     providePrimeNG({
         theme: {
             preset: Aura
-        }
+        },
+
     }),
     provideStore({calendar: CalendarFeature.reducer}),
 ]
