@@ -3,7 +3,7 @@ import {CalendarComponent} from './calendar.component';
 import {provideMockStore, MockStore} from '@ngrx/store/testing';
 import {ReactiveFormsModule} from '@angular/forms';
 import {FullCalendarModule} from '@fullcalendar/angular';
-import * as CalendarActions from './actions';
+import * as CalendarActions from '../actions/calendar.action';
 import {EventClickArg} from '@fullcalendar/core';
 
 describe('CalendarComponent', () => {

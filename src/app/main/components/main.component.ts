@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {CalendarComponent} from '../calendar/calendar.component';
+import {CalendarComponent} from '../../calendar/components/calendar.component';
 
 @Component({
   selector: 'app-main',
