@@ -53,7 +53,7 @@ export class CalendarComponent {
   handleEventClick(selectInfo: EventClickArg): void {
     this.dialogVisible = true
     this.store.dispatch(CalendarActions.formEvent({
-          id: selectInfo.event.id,
+      id: selectInfo.event.id,
       selectedAgent: selectInfo.event.extendedProps['agent'],
       selectedProject: selectInfo.event.extendedProps['project'],
       dateStart: formatDateIntl(selectInfo.event.startStr),
@@ -61,10 +61,14 @@ export class CalendarComponent {
     }));
   }
 
-  handleDateSelect(selectInfo: DateSelectArg): void {
-    const calendarApi = selectInfo.view.calendar;
-    this.dialogVisible = true
+  clearCalendarSelection(selectionInfo: DateSelectArg): void {
+    const calendarApi = selectionInfo.view.calendar;
     calendarApi.unselect(); // clear date selection
+  }
+
+  handleDateSelect(selectInfo: DateSelectArg): void {
+    this.dialogVisible = true
+    this.clearCalendarSelection(selectInfo)
     //formate les dates de la bibliothèque de composant pour correspondre à la lisibilité française
     const dateStart = new Date(selectInfo.startStr)
     const formattedStart = dateStart.toLocaleDateString('fr-FR', {
@@ -79,7 +83,7 @@ export class CalendarComponent {
       year: 'numeric',
     });
     this.store.dispatch(CalendarActions.formEvent({
-       id: null,
+      id: null,
       selectedAgent: null,
       selectedProject: null,
       dateStart: formattedStart,
