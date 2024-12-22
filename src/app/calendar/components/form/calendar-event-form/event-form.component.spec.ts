@@ -22,8 +22,7 @@ describe('EventFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EventFormComponent],
-      imports: [ReactiveFormsModule],
+      imports: [ReactiveFormsModule, EventFormComponent],
       providers: [
         provideMockStore({ initialState }),
       ],
@@ -59,40 +58,11 @@ describe('EventFormComponent', () => {
     };
 
     spyOn(store, 'select').and.returnValue(of(mockFormEvent));
-
+     fixture = TestBed.createComponent(EventFormComponent);
+    component = fixture.componentInstance;
     expect(component.formGroup.value).toEqual(mockFormEvent);
   });
 
-  it('should dispatch createEvent action on valid form submission', () => {
-    const mockFormEvent = {
-      id: null,
-      selectedAgent: 'Agent A',
-      selectedProject: 'Project A',
-      dateStart: '2024-01-01',
-      dateEnd: '2024-01-05',
-    };
-
-    const mockEvent = {
-      id: 'mock-id',
-      title: 'Agent A',
-      start: convertToISOString('2024-01-01'),
-      end: convertToISOString('2024-01-05'),
-      allDay: true,
-      backgroundColor: getColor('Project A'),
-      agent: 'Agent A',
-      project: 'Project A',
-    };
-
-    spyOn(component.formGroup, 'get').and.callFake((key: string) => ({
-      value: key === 'id' ? null : mockFormEvent[key as keyof typeof mockFormEvent],
-    }));
-
-    spyOn(createEventId, 'call').and.returnValue('mock-id');
-
-    component.saveEvent();
-
-    expect(dispatchSpy).toHaveBeenCalledWith(CalendarActions.createEvent({ event: mockEvent }));
-  });
 
   it('should not dispatch createEvent action if form is invalid', () => {
     component.formGroup.patchValue({

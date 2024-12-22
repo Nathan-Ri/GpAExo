@@ -1,5 +1,10 @@
+
 export function formatDateIntl(dateString: string): string {
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    console.error('Invalid Date')
+    return 'Invalid Date'
+  }
   return new Intl.DateTimeFormat('fr-FR').format(date);
 };
 
