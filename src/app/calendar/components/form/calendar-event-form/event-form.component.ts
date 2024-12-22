@@ -39,7 +39,6 @@ export class EventFormComponent implements OnDestroy {
   private subscription: Subscription = new Subscription();
 
   constructor(private readonly store: Store) {
-    // this.events$ = store.select(CalendarFeature.selectEvents) // bind du flux sur le store fullCalendar
     this.agents$ = store.select(AgentFeature.selectAgents) // bind du flux sur le store fullCalendar
     this.projects$ = store.select(ProjectFeature.selectProjects) // bind du flux sur le store fullCalendar
     this.formGroup = new FormGroup({

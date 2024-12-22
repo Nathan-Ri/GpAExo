@@ -10,67 +10,7 @@
   </ng-template>
 </full-calendar>
 
-
-<!--<p-dialog-->
-<!--  [(visible)]="dialogVisible"-->
-<!--  [modal]="true"-->
-<!--  [style]="{ width: '50rem' }">-->
-<!--  <ng-template #header>-->
-<!--  </ng-template>-->
   <app-event-form
     [(dialogVisible)]="dialogVisible"
     [eventData]="eventData"
   ></app-event-form>
-<!--  <form [formGroup]="formGroup">-->
-<!--    <input type="hidden" formControlName="id"/>-->
-<!--    <div class="flex items-center gap-4 mb-4">-->
-<!--      <label for="projects" class="font-semibold w-24">Agent</label>-->
-<!--      <p-select-->
-<!--        id="agent"-->
-<!--        [options]="agents$ | async"-->
-<!--        formControlName="selectedAgent"-->
-<!--        placeholder="Select an agent"-->
-<!--        class="w-full md:w-56"-->
-<!--        appendTo="body"-->
-<!--      />-->
-<!--    </div>-->
-<!--    <div class="flex items-center gap-4 mb-4">-->
-<!--      <label for="projects" class="font-semibold w-24">Projet</label>-->
-<!--      <p-select-->
-<!--        id="projects"-->
-<!--        [options]="projects$ | async"-->
-<!--        formControlName="selectedProject"-->
-<!--        placeholder="Select a Project"-->
-<!--        class="w-full md:w-56"-->
-<!--        appendTo="body"-->
-<!--      />-->
-<!--    </div>-->
-<!--    <div class="flex items-center gap-4 mb-4">-->
-<!--      <label for="dateStart" class="font-semibold w-24"> date Start</label>-->
-<!--      <p-date-picker-->
-<!--        id="dateStart"-->
-<!--        formControlName="dateStart"-->
-<!--        appendTo="body"-->
-<!--        [dateFormat]="'dd/mm/yy'"-->
-<!--        [dataType]="'string'"-->
-<!--        [keepInvalid]="true">-->
-
-<!--      </p-date-picker>-->
-<!--      <label for="dateEnd" class="font-semibold w-24"> date end</label>-->
-<!--      <p-date-picker-->
-<!--        id="dateEnd"-->
-<!--        pTooltip="This date is excluded, it finishes the day before at 23h59min59s"-->
-<!--        formControlName="dateEnd"-->
-<!--        appendTo="body"-->
-<!--        [dateFormat]="'dd/mm/yy'"-->
-<!--        [dataType]="'string'"-->
-<!--        [keepInvalid]="true"-->
-<!--      >-->
-<!--      </p-date-picker>-->
-<!--    </div>-->
-<!--  </form>-->
-<!--  <div class="flex justify-end gap-2">-->
-<!--    <p-button label="Cancel" severity="secondary" (click)="dialogVisible = false"/>-->
-<!--    <p-button label="Save" (click)="saveEvent()"/>-->
-<!--  </div>-->
-<!--</p-dialog>-->
